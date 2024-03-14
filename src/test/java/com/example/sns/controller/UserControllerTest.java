@@ -2,6 +2,7 @@ package com.example.sns.controller;
 
 import com.example.sns.controller.request.UserJoinRequest;
 import com.example.sns.controller.request.UserLoginRequest;
+import com.example.sns.exception.ErrorCode;
 import com.example.sns.exception.SnsApplicationException;
 import com.example.sns.model.User;
 import com.example.sns.service.UserService;
@@ -87,7 +88,7 @@ public class UserControllerTest {
         String username = "username";
         String password = "password";
 
-        when(userService.login(username, password)).thenThrow(new SnsApplicationException());
+        when(userService.login(username, password)).thenThrow(new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME,""));
 
         mockMvc.perform(post("/api/v1/users/login")
                         .contentType(MediaType.APPLICATION_JSON)
