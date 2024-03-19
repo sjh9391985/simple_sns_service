@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.mock;
@@ -34,6 +35,9 @@ public class UserControllerTest {
     @MockBean
     private UserService userService;
 
+    @MockBean
+    private BCryptPasswordEncoder encoder;
+
     @Test
     public void 회원가입() throws Exception {
 
@@ -41,10 +45,11 @@ public class UserControllerTest {
         String password = "password";
 
         when(userService.join(username, password)).thenReturn(mock(User.class));
+        when(encoder.encode(password)).thenReturn("encrypt_password");
 
         mockMvc.perform(post("/api/v1/users/join")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new UserJoinRequest(username, password)))
+                        .content(objectMapper.writeValueAsBytes(new UserJoinRequest(username, encoder.encode(password))))
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -56,7 +61,8 @@ public class UserControllerTest {
         String username = "username";
         String password = "password";
 
-        when(userService.join(username, password)).thenThrow(new SnsApplicationException());
+        when(userService.join(username, password)).thenThrow(new SnsApplicationException(ErrorCode.INTERNAL_SERVER_ERROR, ""));
+        when(encoder.encode(password)).thenReturn("encrypt_password");
 
         mockMvc.perform(post("/api/v1/users/join")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -88,7 +94,7 @@ public class UserControllerTest {
         String username = "username";
         String password = "password";
 
-        when(userService.login(username, password)).thenThrow(new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME,""));
+        when(userService.login(username, password)).thenThrow(new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME, ""));
 
         mockMvc.perform(post("/api/v1/users/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -104,7 +110,7 @@ public class UserControllerTest {
         String username = "username";
         String password = "password";
 
-        when(userService.login(username, password)).thenThrow(new SnsApplicationException());
+        when(userService.login(username, password)).thenThrow(new SnsApplicationException(ErrorCode.INTERNAL_SERVER_ERROR, ""));
 
         mockMvc.perform(post("/api/v1/users/login")
                         .contentType(MediaType.APPLICATION_JSON)
