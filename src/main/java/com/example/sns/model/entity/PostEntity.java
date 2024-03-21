@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.springframework.security.core.parameters.P;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -26,7 +27,7 @@ public class PostEntity {
     private String title;
 
     @Column(name = "body", columnDefinition = "TEXT")
-    private String title;
+    private String body;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -49,6 +50,16 @@ public class PostEntity {
     @PreUpdate
     void updatedAt() {
         this.updatedAt = Timestamp.from(Instant.now());
+    }
+
+    public static PostEntity of(String title, String body, UserEntity userEntity) {
+        PostEntity entity = new PostEntity();
+
+        entity.setTitle(title);
+        entity.setBody(body);
+        entity.setUser(userEntity);
+
+        return entity;
     }
 
 }
