@@ -22,7 +22,7 @@ public class PostController {
 
         postService.create(request.getTitle(), request.getBody(), authentication.getName());
 
-        return Response.success(null);
+        return Response.success();
 
     }
 
