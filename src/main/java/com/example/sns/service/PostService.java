@@ -26,8 +26,6 @@ public class PostService {
         // 게시글 저장
         PostEntity saved = postEntityRepository.save(PostEntity.of(title, body, userEntity));
 
-        // 결과 반환
-
     }
 
 }
