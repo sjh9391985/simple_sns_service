@@ -11,9 +11,6 @@ import java.util.Date;
 
 public class JwtTokenUtils {
 
-    public static boolean isValid(String token) {
-
-    }
 
     public static String getUsername(String token, String key) {
         return extractClaims(token, key).get("username", String.class);
@@ -25,7 +22,7 @@ public class JwtTokenUtils {
     }
 
     private static Claims extractClaims(String token, String key) {
-        Jwts.parserBuilder().setSigningKey(getKey(key))
+        return Jwts.parserBuilder().setSigningKey(getKey(key))
                 .build().parseClaimsJws(token).getBody();
     }
 
