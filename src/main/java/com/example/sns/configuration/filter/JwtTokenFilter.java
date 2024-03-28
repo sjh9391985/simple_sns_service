@@ -7,7 +7,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -15,13 +18,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @RequiredArgsConstructor
 @Slf4j
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final String key;
-    private UserService userService;
+    private final UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -37,7 +43,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         try {
             final String token = header.split(" ")[1].trim();
 
-            if (JwtTokenUtils.isExpired(token, key)){
+            if (JwtTokenUtils.isExpired(token, key)) {
                 log.error("key expired");
                 filterChain.doFilter(request, response);
                 return;
@@ -46,12 +52,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             String username = JwtTokenUtils.getUsername(token, key);
             User user = userService.loadUserByName(username);
 
-
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    null, null, null
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    user, null, user.getAuthorities()
             );
-
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
         } catch (RuntimeException e) {
             filterChain.doFilter(request, response);
