@@ -47,4 +47,20 @@ public class PostService {
         return Post.fromEntity(postEntityRepository.saveAndFlush(postEntity));
     }
 
+    public void delete(String userName, Integer postid) {
+        // 유저 조회
+        UserEntity userEntity = userEntityRepository.findByUsername(userName).orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", userName)));
+
+        // 게시글 조회
+        PostEntity postEntity = postEntityRepository.findById(postid).orElseThrow(() -> new SnsApplicationException(ErrorCode.POST_NOT_FOUND, String.format("%s not founded", postid)));
+
+        // 게시글 권한
+        if(postEntity.getUser() != userEntity) {
+            throw new SnsApplicationException(ErrorCode.INVALID_PERMISSION, String.format("%s has no permission with %s", userName, postid));
+        }
+
+        postEntityRepository.delete(postEntity);
+
+    }
+
 }
