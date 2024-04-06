@@ -32,7 +32,7 @@ public class UserController {
     public Response<UserLoginResponse> login(
             @RequestBody UserLoginRequest request
     ) {
-        String token = userService.login(request.getUsername(), request.getPassword());
+        String token = userService.login(request.getName(), request.getPassword());
         return Response.success(new UserLoginResponse(token));
     }
 
