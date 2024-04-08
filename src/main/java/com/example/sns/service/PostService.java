@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -100,4 +101,13 @@ public class PostService {
         likeEntityRepository.save(LikeEntity.of(userEntity, postEntity));
     }
 
+    public int likeCount(Integer postId) {
+        // 게시글 조회
+        PostEntity postEntity = postEntityRepository.findById(postId).orElseThrow(() -> new SnsApplicationException(ErrorCode.POST_NOT_FOUND, String.format("%s not founded", postId)));
+
+        // check like
+//        List<LikeEntity> likeEntities = likeEntityRepository.findAllByPost(postEntity);
+//        return likeEntities.size();
+        return likeEntityRepository.countByPost(postEntity);
+    }
 }
