@@ -17,8 +17,8 @@ public enum ErrorCode {
     INVALID_PERMISSION(HttpStatus.UNAUTHORIZED, "Permision is invalid"),
     ALREADY_LIKED(HttpStatus.CONFLICT, "User already liked the post" );
 
-    private HttpStatus status;
-    private String message;
+    private final HttpStatus status;
+    private final String message;
 
 
 }

@@ -18,10 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-
-
 @RequiredArgsConstructor
 @Service
 public class PostService {
@@ -32,27 +28,26 @@ public class PostService {
     private final CommentEntityRepository commentEntityRepository;
 
     @Transactional
-    public void create(String title, String body, String username) {
-
+    public void create(String title, String body, String userName) {
         // 유저 조회
-        UserEntity userEntity = getUserOrException(username);
+        UserEntity userEntity = getUserOrException(userName);
 
         // 게시글 저장
         postEntityRepository.save(PostEntity.of(title, body, userEntity));
 
     }
 
-    public Post modify(String title, String body, String userName, Integer postid) {
+    public Post modify(String title, String body, String userName, Integer postId) {
         // 유저 조회
         UserEntity userEntity = getUserOrException(userName);
 
         // 게시글 조회
-        PostEntity postEntity = getPostOrException(postid);
+        PostEntity postEntity = getPostOrException(postId);
 
 
         // 게시글 권한
         if (postEntity.getUser() != userEntity) {
-            throw new SnsApplicationException(ErrorCode.INVALID_PERMISSION, String.format("%s has no permission with %s", userName, postid));
+            throw new SnsApplicationException(ErrorCode.INVALID_PERMISSION, String.format("%s has no permission with %s", userName, postId));
         }
 
         postEntity.setTitle(title);
@@ -61,16 +56,16 @@ public class PostService {
         return Post.fromEntity(postEntityRepository.saveAndFlush(postEntity));
     }
 
-    public void delete(String userName, Integer postid) {
+    public void delete(String userName, Integer postId) {
         // 유저 조회
         UserEntity userEntity = getUserOrException(userName);
 
         // 게시글 조회
-        PostEntity postEntity = getPostOrException(postid);
+        PostEntity postEntity = getPostOrException(postId);
 
         // 게시글 권한
         if (postEntity.getUser() != userEntity) {
-            throw new SnsApplicationException(ErrorCode.INVALID_PERMISSION, String.format("%s has no permission with %s", userName, postid));
+            throw new SnsApplicationException(ErrorCode.INVALID_PERMISSION, String.format("%s has no permission with %s", userName, postId));
         }
 
         postEntityRepository.delete(postEntity);
@@ -81,9 +76,9 @@ public class PostService {
         return postEntityRepository.findAll(pageable).map(Post::fromEntity);
     }
 
-    public Page<Post> my(String username, Pageable pageable) {
+    public Page<Post> my(String userName, Pageable pageable) {
         // 유저 조회
-        UserEntity userEntity = getUserOrException(username);
+        UserEntity userEntity = getUserOrException(userName);
 
         return postEntityRepository.findAllByUser(userEntity, pageable).map(Post::fromEntity);
     }
@@ -109,9 +104,7 @@ public class PostService {
         // 게시글 조회
         PostEntity postEntity = getPostOrException(postId);
 
-//        check like
-//        List<LikeEntity> likeEntities = likeEntityRepository.findAllByPost(postEntity);
-//        return likeEntities.size();
+        //check like
         return likeEntityRepository.countByPost(postEntity);
     }
 
@@ -131,6 +124,6 @@ public class PostService {
     }
 
     private UserEntity getUserOrException(String userName) {
-        return userEntityRepository.findByUsername(userName).orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", userName)));
+        return userEntityRepository.findByUserName(userName).orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", userName)));
     }
 }

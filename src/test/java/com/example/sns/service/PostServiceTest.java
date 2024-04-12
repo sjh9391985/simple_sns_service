@@ -2,7 +2,6 @@ package com.example.sns.service;
 
 import com.example.sns.exception.ErrorCode;
 import com.example.sns.exception.SnsApplicationException;
-import com.example.sns.fixture.UserEntityFixture;
 import com.example.sns.model.entity.PostEntity;
 import com.example.sns.model.entity.UserEntity;
 import com.example.sns.respository.PostEntityRepository;
@@ -39,7 +38,7 @@ public class PostServiceTest {
         String username = "username";
 
 
-        when(userEntityRepository.findByUsername(username)).thenReturn(Optional.of(mock(UserEntity.class)));
+        when(userEntityRepository.findByUserName(username)).thenReturn(Optional.of(mock(UserEntity.class)));
         when(postEntityRepository.save(any())).thenReturn(mock(PostEntity.class));
 
         Assertions.assertThrows(SnsApplicationException.class, () -> postService.create(title, body, username));
@@ -54,7 +53,7 @@ public class PostServiceTest {
         String username = "username";
 
 
-        when(userEntityRepository.findByUsername(username)).thenReturn(Optional.empty());
+        when(userEntityRepository.findByUserName(username)).thenReturn(Optional.empty());
         when(postEntityRepository.save(any())).thenReturn(mock(PostEntity.class));
 
         SnsApplicationException e = Assertions.assertThrows(SnsApplicationException.class, () -> postService.create(title, body, username));
