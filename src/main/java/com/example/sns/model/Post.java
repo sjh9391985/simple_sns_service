@@ -1,17 +1,10 @@
 package com.example.sns.model;
 
 import com.example.sns.model.entity.PostEntity;
-import com.example.sns.model.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 @Getter
 @AllArgsConstructor
