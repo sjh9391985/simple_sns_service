@@ -30,9 +30,9 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
-    public Response<PostResponse> modify(@PathVariable Integer postid, @RequestBody PostCreateRequest request, Authentication authentication) {
+    public Response<PostResponse> modify(@PathVariable Integer postId, @RequestBody PostCreateRequest request, Authentication authentication) {
 
-        Post post = postService.modify(request.getTitle(), request.getBody(), authentication.getName(), postid);
+        Post post = postService.modify(request.getTitle(), request.getBody(), authentication.getName(), postId);
 
         return Response.success(PostResponse.fromPost(post));
 
@@ -68,7 +68,7 @@ public class PostController {
 
     @PostMapping("/{postId}/comments")
     public Response<Void> comment(@PathVariable Integer postId, @RequestBody PostCommentRequest request, Authentication authentication) {
-        postService. comment(postId, authentication.getName(), request.getComment());
+        postService.comment(postId, authentication.getName(), request.getComment());
         return Response.success();
     }
 

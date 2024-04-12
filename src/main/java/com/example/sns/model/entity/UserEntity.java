@@ -23,7 +23,7 @@ public class UserEntity {
     private Integer id;
 
     @Column(name = "user_name")
-    private String username;
+    private String userName;
 
     @Column(name = "password")
     private String password;
@@ -51,9 +51,9 @@ public class UserEntity {
         this.updatedAt = Timestamp.from(Instant.now());
     }
 
-    public static UserEntity of(String username, String password) {
+    public static UserEntity of(String userName, String password) {
         UserEntity userEntity = new UserEntity();
-        userEntity.setUsername(username);
+        userEntity.setUserName(userName);
         userEntity.setPassword(password);
         return userEntity;
 
