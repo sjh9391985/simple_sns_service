@@ -24,7 +24,7 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
     private String key;
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring().regexMatchers("^(?!/api/).*");
     }
 
