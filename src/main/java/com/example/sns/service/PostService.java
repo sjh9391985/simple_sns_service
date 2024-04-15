@@ -2,6 +2,7 @@ package com.example.sns.service;
 
 import com.example.sns.exception.ErrorCode;
 import com.example.sns.exception.SnsApplicationException;
+import com.example.sns.model.Comment;
 import com.example.sns.model.Post;
 import com.example.sns.model.entity.CommentEntity;
 import com.example.sns.model.entity.LikeEntity;
@@ -125,5 +126,11 @@ public class PostService {
 
     private UserEntity getUserOrException(String userName) {
         return userEntityRepository.findByUserName(userName).orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", userName)));
+    }
+
+    public Page<Comment> getComments(Integer postId, Pageable pageable) {
+        // 게시글 조회
+        PostEntity postEntity = getPostOrException(postId);
+        return commentEntityRepository.findAllByPost(postEntity, pageable).map(Comment::fromEntity);
     }
 }
