@@ -2,7 +2,9 @@ package com.example.sns.service;
 
 import com.example.sns.exception.ErrorCode;
 import com.example.sns.exception.SnsApplicationException;
+import com.example.sns.model.Alarms;
 import com.example.sns.model.User;
+import com.example.sns.model.entity.AlarmEntityRepository;
 import com.example.sns.model.entity.UserEntity;
 import com.example.sns.respository.UserEntityRepository;
 import com.example.sns.util.JwtTokenUtils;
@@ -19,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserEntityRepository userEntityRepository;
-    private final AlarmRepository alarmRepository;
+    private final AlarmEntityRepository alarmEntityRepository;
     private final BCryptPasswordEncoder encoder;
 
     @Value("${jwt.secret-key}")
@@ -27,6 +29,7 @@ public class UserService {
 
     @Value("${jwt.token.expired-time-ms}")
     private Long expiredTimeMs;
+
 
     @Transactional
     public User join(String userName, String password) {
@@ -57,13 +60,12 @@ public class UserService {
         return userEntityRepository.findByUserName(userName).map(User::fromEntity).orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", userName)));
     }
 
-    public Page<Void> alarmList(Pageable pageable, String userName) {
+    public Page<Alarms> alarmList(Pageable pageable, String userName) {
         // 1. 회원가입 여부 체크
         UserEntity userEntity = userEntityRepository.findByUserName(userName).orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", userName)));
 
-        alarmRepository
+        return alarmEntityRepository.findAllByUser(userEntity, pageable).map(Alarms::fromEntity);
 
-        return Page.empty();
     }
 
 }
