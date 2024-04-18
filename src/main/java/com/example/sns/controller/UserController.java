@@ -2,10 +2,7 @@ package com.example.sns.controller;
 
 import com.example.sns.controller.request.UserJoinRequest;
 import com.example.sns.controller.request.UserLoginRequest;
-import com.example.sns.controller.response.CommentResponse;
-import com.example.sns.controller.response.Response;
-import com.example.sns.controller.response.UserJoinResponse;
-import com.example.sns.controller.response.UserLoginResponse;
+import com.example.sns.controller.response.*;
 import com.example.sns.model.User;
 import com.example.sns.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +35,8 @@ public class UserController {
     }
 
     @GetMapping("/alarm")
-    public Response<Page<>> alarm(Pageable pageable, Authentication authentication) {
-        userService.alarmList(pageable, authentication.getName());
+    public Response<Page<AlarmResponse>> alarm(Pageable pageable, Authentication authentication) {
+        return Response.success(userService.alarmList(pageable, authentication.getName()).map(AlarmResponse::fromAlarm));
     }
 
 }
