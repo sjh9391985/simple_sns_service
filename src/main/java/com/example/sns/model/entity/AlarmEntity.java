@@ -2,10 +2,13 @@ package com.example.sns.model.entity;
 
 import com.example.sns.model.AlarmArgs;
 import com.example.sns.model.AlarmType;
-import com.example.sns.model.UserRole;
+
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -15,7 +18,10 @@ import java.time.Instant;
 @Setter
 @Getter
 @Entity
-@Table(name = "\"alarm\"")
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+@Table(name = "\"alarm\"", indexes = {
+        @Index(name = "user_id_idx", columnList = "user_id")
+})
 @SQLDelete(sql = "UPDATE \"alarm\" SET deleted_at = NOW() where id = ?")
 @Where(clause = "deleted_at is NULL")
 public class AlarmEntity {
@@ -31,6 +37,7 @@ public class AlarmEntity {
     @Enumerated(EnumType.STRING)
     private AlarmType alarmType;
 
+    @Type(type = "jsonb") // index 걸수있음 (psql 에 있음)
     @Column(columnDefinition = "json")
     private AlarmArgs args;
 
@@ -53,11 +60,12 @@ public class AlarmEntity {
         this.updatedAt = Timestamp.from(Instant.now());
     }
 
-    public static AlarmEntity of(String userName, String password) {
-        AlarmEntity userEntity = new AlarmEntity();
-        userEntity.setUserName(userName);
-        userEntity.setPassword(password);
-        return userEntity;
+    public static AlarmEntity of(UserEntity userEntity, AlarmType alarmType, AlarmArgs args) {
+        AlarmEntity entity = new AlarmEntity();
+        entity.setUser(userEntity);
+        entity.setAlarmType(alarmType);
+        entity.setArgs(args);
+        return entity;
 
     }
 }
