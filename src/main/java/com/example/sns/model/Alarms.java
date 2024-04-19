@@ -10,7 +10,6 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class Alarms {
     private Integer id;
-    private User user;
     private AlarmType alarmType;
     private AlarmArgs args;
     private Timestamp registeredAt;
@@ -20,7 +19,6 @@ public class Alarms {
     public static Alarms fromEntity(AlarmEntity entity) {
         return new Alarms(
                 entity.getId(),
-                User.fromEntity(entity.getUser()),
                 entity.getAlarmType(),
                 entity.getArgs(),
                 entity.getRegisteredAt(),
