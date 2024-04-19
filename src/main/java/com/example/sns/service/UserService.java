@@ -60,11 +60,8 @@ public class UserService {
         return userEntityRepository.findByUserName(userName).map(User::fromEntity).orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", userName)));
     }
 
-    public Page<Alarms> alarmList(Pageable pageable, String userName) {
-        // 1. 회원가입 여부 체크
-        UserEntity userEntity = userEntityRepository.findByUserName(userName).orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", userName)));
-
-        return alarmEntityRepository.findAllByUser(userEntity, pageable).map(Alarms::fromEntity);
+    public Page<Alarms> alarmList(Pageable pageable, Integer userId) {
+        return alarmEntityRepository.findAllByUserId(userId, pageable).map(Alarms::fromEntity);
 
     }
 
