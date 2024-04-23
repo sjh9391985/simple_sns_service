@@ -1,7 +1,6 @@
 package com.example.sns.controller.response;
 
 import com.example.sns.model.Comment;
-import com.example.sns.model.Post;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

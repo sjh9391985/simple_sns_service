@@ -2,7 +2,6 @@ package com.example.sns.model.entity;
 
 import com.example.sns.model.AlarmArgs;
 import com.example.sns.model.AlarmType;
-
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Getter;
 import lombok.Setter;

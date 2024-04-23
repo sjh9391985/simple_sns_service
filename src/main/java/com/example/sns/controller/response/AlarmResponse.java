@@ -3,8 +3,6 @@ package com.example.sns.controller.response;
 import com.example.sns.model.AlarmArgs;
 import com.example.sns.model.AlarmType;
 import com.example.sns.model.Alarms;
-import com.example.sns.model.User;
-import com.example.sns.model.entity.AlarmEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

@@ -12,7 +12,6 @@ import com.example.sns.respository.LikeEntityRepository;
 import com.example.sns.respository.PostEntityRepository;
 import com.example.sns.respository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

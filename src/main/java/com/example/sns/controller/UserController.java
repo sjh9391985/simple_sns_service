@@ -2,7 +2,10 @@ package com.example.sns.controller;
 
 import com.example.sns.controller.request.UserJoinRequest;
 import com.example.sns.controller.request.UserLoginRequest;
-import com.example.sns.controller.response.*;
+import com.example.sns.controller.response.AlarmResponse;
+import com.example.sns.controller.response.Response;
+import com.example.sns.controller.response.UserJoinResponse;
+import com.example.sns.controller.response.UserLoginResponse;
 import com.example.sns.exception.ErrorCode;
 import com.example.sns.exception.SnsApplicationException;
 import com.example.sns.model.User;

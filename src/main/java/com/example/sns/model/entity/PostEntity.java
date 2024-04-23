@@ -1,11 +1,9 @@
 package com.example.sns.model.entity;
 
-import com.example.sns.model.UserRole;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-import org.springframework.security.core.parameters.P;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
