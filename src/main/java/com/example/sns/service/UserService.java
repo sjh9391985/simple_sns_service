@@ -6,6 +6,7 @@ import com.example.sns.model.Alarms;
 import com.example.sns.model.User;
 import com.example.sns.model.entity.AlarmEntityRepository;
 import com.example.sns.model.entity.UserEntity;
+import com.example.sns.respository.UserCacheRepository;
 import com.example.sns.respository.UserEntityRepository;
 import com.example.sns.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class UserService {
     private final UserEntityRepository userEntityRepository;
     private final AlarmEntityRepository alarmEntityRepository;
     private final BCryptPasswordEncoder encoder;
+    private final UserCacheRepository userCacheRepository;
 
     @Value("${jwt.secret-key}")
     private String secretKey;
@@ -46,10 +48,11 @@ public class UserService {
 
     public String login(String userName, String password) {
         // 1. 회원가입 여부 체크
-        UserEntity userEntity = userEntityRepository.findByUserName(userName).orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", userName)));
+        User user = loadUserByName(userName);
+        userCacheRepository.setUser(user);
 
         // 2. 비밀번호 체크
-        if (encoder.matches(password, userEntity.getPassword()))
+        if (encoder.matches(password, user.getPassword()))
             throw new SnsApplicationException(ErrorCode.INVALID_PASSWORD, "password is invalid");
 
         // 3. 토큰 생성 및 반환
@@ -57,7 +60,8 @@ public class UserService {
     }
 
     public User loadUserByName(String userName) {
-        return userEntityRepository.findByUserName(userName).map(User::fromEntity).orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", userName)));
+        return userCacheRepository.getUser(userName).orElseGet(() -> userEntityRepository.findByUserName(userName).map(User::fromEntity).orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", userName))));
+
     }
 
     public Page<Alarms> alarmList(Pageable pageable, Integer userId) {
