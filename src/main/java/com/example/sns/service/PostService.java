@@ -7,6 +7,8 @@ import com.example.sns.model.AlarmType;
 import com.example.sns.model.Comment;
 import com.example.sns.model.Post;
 import com.example.sns.model.entity.*;
+import com.example.sns.model.event.AlarmEvent;
+import com.example.sns.producer.AlarmProducer;
 import com.example.sns.respository.CommentEntityRepository;
 import com.example.sns.respository.LikeEntityRepository;
 import com.example.sns.respository.PostEntityRepository;
@@ -27,6 +29,7 @@ public class PostService {
     private final CommentEntityRepository commentEntityRepository;
     private final AlarmEntityRepository alarmEntityRepository;
     private final AlarmService alarmService;
+    private final AlarmProducer producer;
 
     @Transactional
     public void create(String title, String body, String userName) {
@@ -121,8 +124,7 @@ public class PostService {
 
         commentEntityRepository.save(CommentEntity.of(userEntity, postEntity, comment));
 
-        AlarmEntity alarm = alarmEntityRepository.save(AlarmEntity.of(postEntity.getUser(), AlarmType.NEW_COMMENT_ON_POST, new AlarmArgs(userEntity.getId(), postEntity.getId())));
-        alarmService.send(alarm.getId(), postEntity.getUser().getId());
+        producer.send(new AlarmEvent(postEntity.getUser().getId(), AlarmType.NEW_LIKE_ON_POST, new AlarmArgs(userEntity.getId(), postEntity.getId())));
     }
 
     private PostEntity getPostOrException(Integer postId) {
